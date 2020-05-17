@@ -1,0 +1,49 @@
+buildscript {
+    ext.kotlin_version = '1.3.72'
+
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version "1.3.72"
+}
+
+ext.vertx_version = '3.9.0'
+
+group 'com.canopy'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "io.vertx:vertx-lang-kotlin:$vertx_version"
+    implementation "io.vertx:vertx-lang-kotlin-coroutines:$vertx_version"
+    implementation "io.vertx:vertx-web:$vertx_version"
+    implementation "io.vertx:vertx-web-api-contract:$vertx_version"
+    annotationProcessor "io.vertx:vertx-codegen:$vertx_version:processor"
+    annotationProcessor "io.vertx:vertx-service-proxy:$vertx_version:processor"
+    annotationProcessor "io.vertx:vertx-web-api-service:$vertx_version"
+    implementation "io.vertx:vertx-codegen:$vertx_version"
+    implementation "io.vertx:vertx-web-api-service:$vertx_version"
+    implementation "io.vertx:vertx-service-proxy:$vertx_version"
+    implementation "com.google.inject:guice:4.2.3"
+    implementation "ch.qos.logback:logback-classic:1.2.3"
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
