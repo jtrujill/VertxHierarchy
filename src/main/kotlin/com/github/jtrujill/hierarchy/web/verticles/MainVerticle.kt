@@ -52,12 +52,15 @@ class MainVerticle @Inject constructor(@WebPort private val port: Int, private v
                 router.errorHandler(404, ::handleNotFoundException)
                 router.errorHandler(500, ::handleInternalException)
 
-                server = vertx.createHttpServer(HttpServerOptions().setPort(port).setHost("localhost"))
+                server = vertx.createHttpServer(HttpServerOptions().setPort(port).setHost("0.0.0.0"))
+
                 server.requestHandler(router).listen()
+                logger.info("${MainVerticle::class.java.name} started")
             } else {
                 logger.error("Failed to initialize ${MainVerticle::class.java.canonicalName} router", it.cause())
             }
         }
+
     }
 
     private fun createErrorBody(code: String, message: String): JsonObject {

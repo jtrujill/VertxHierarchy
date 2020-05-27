@@ -11,13 +11,22 @@ buildscript {
 }
 
 plugins {
-    id 'java'
-    id 'org.jetbrains.kotlin.jvm' version "1.3.72"
+    id "java"
+    id 'application'
+    id "org.jetbrains.kotlin.jvm" version "1.3.72"
+    id "org.flywaydb.flyway" version "6.3.3"
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+}
+
+flyway {
+    url = 'jdbc:mysql://localhost:3306/vertx_hierarchy'
+    user = 'jeremy'
+    password = 'super_secret'
 }
 
 ext.vertx_version = '3.9.0'
 
-group 'com.canopy'
+group 'com.github.jtrujill'
 version '1.0-SNAPSHOT'
 
 repositories {
@@ -39,6 +48,9 @@ dependencies {
     implementation "io.vertx:vertx-service-proxy:$vertx_version"
     implementation "com.google.inject:guice:4.2.3"
     implementation "ch.qos.logback:logback-classic:1.2.3"
+    implementation "org.modelmapper:modelmapper:2.3.0"
+    implementation "org.flywaydb:flyway-core:6.4.2"
+    implementation "mysql:mysql-connector-java:8.0.20"
 }
 
 compileKotlin {
@@ -46,4 +58,12 @@ compileKotlin {
 }
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+mainClassName = 'com.github.jtrujill.hierarchy.MainKt'
+
+shadowJar {
+    mergeServiceFiles {
+        include 'META-INF/services/io.vertx.core.spi.VerticleFactory'
+    }
 }

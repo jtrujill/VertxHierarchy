@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    restart: 'always'
+    ports:
+      - "8080:8080"
+    networks:
+      - overlay
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql:8
+    environment:
+      - MYSQL_ROOT_PASSWORD=dont_share
+      - MYSQL_USER=jeremy
+      - MYSQL_PASSWORD=super_secret
+    ports:
+      - "3306:3306"
+    networks:
+      - overlay
+    volumes:
+      - ./sql_init:/docker-entrypoint-initdb.d
+      - db-data:/var/lib/mysql
+
+volumes:
+  db-data:
+
+networks:
+  overlay:

@@ -190,7 +190,8 @@
             ]
           },
           "group": {
-            "type": "string"
+            "type": "string",
+            "maxLength": 255
           }
         },
         "additionalProperties": false,
