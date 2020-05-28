@@ -51,6 +51,7 @@ dependencies {
     implementation "org.modelmapper:modelmapper:2.3.0"
     implementation "org.flywaydb:flyway-core:6.4.2"
     implementation "mysql:mysql-connector-java:8.0.20"
+    implementation "io.vertx:vertx-mysql-postgresql-client-jasync:3.9.1"
 }
 
 compileKotlin {
@@ -68,14 +69,7 @@ def doOnChange = ".${File.separator}gradlew classes"
 
 run {
     main = "io.vertx.core.Launcher"
-    args = ['run', "--redeploy=$watchForChange", "--launcher-class=$mainClassName", "--on-redeploy=$doOnChange"]
-
-    debugOptions {
-        enabled = true
-        port = 5566
-        server = true
-        suspend = false
-    }
+    args = ['run', "--redeploy=$watchForChange", "--launcher-class=$mainClassName", "--on-redeploy=$doOnChange", "--java-opts=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5566"]
 }
 
 shadowJar {

@@ -39,7 +39,7 @@ private fun setupLogging() {
 private fun migrateDb() {
     try {
         val dbUrl = "jdbc:mysql://mysql/vertx_hierarchy"
-        val flyway = Flyway.configure().dataSource(dbUrl, "jeremy", "super_secret").load()
+        val flyway = Flyway.configure().dataSource(dbUrl, "root", "dont_share").load()
         flyway.migrate()
     } catch (e: Exception) {
         logger.error("Failed to migrate database", e)

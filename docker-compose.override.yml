@@ -5,13 +5,19 @@ services:
     image: gradle:6.4.1-jdk14
     volumes:
       - .:/app
-      - .gradle:/app/.gradle
+      - gradle:/app/.gradle
       - build:/app/build
     working_dir: /app
+    ports:
+      - 5566:5566
     entrypoint:
       - "./gradlew"
       - "run"
 
+  mysql:
+    volumes:
+      - ./mysql-compat.cnf:/etc/mysql/conf.d/mysql.cnf
+
 volumes:
-  .gradle:
+  gradle:
   build:

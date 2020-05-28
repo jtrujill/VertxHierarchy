@@ -1,7 +1,6 @@
 package com.github.jtrujill.hierarchy.web.services
 
-import com.github.jtrujill.hierarchy.app.UserWorshiper
-import com.github.jtrujill.hierarchy.app.models.Node
+import com.github.jtrujill.hierarchy.app.repo.NodeRepo
 import com.github.jtrujill.hierarchy.web.models.HierarchicalBody
 import com.google.inject.Inject
 import io.vertx.core.AsyncResult
@@ -14,7 +13,7 @@ import org.modelmapper.ModelMapper
 
 class HierarchyServiceImpl @Inject constructor(
     private val mapper: ModelMapper,
-    private val userWorship: UserWorshiper
+    private val nodeRepo: NodeRepo
 ) :
     HierarchyService {
     override fun getHierarchy(
@@ -39,9 +38,7 @@ class HierarchyServiceImpl @Inject constructor(
         context: OperationRequest,
         resultHandler: Handler<AsyncResult<OperationResponse>>
     ) {
-        val uniqueNodes = body.nodes.map {
-            mapper.map(it, Node::class.java)
-        }.toSet()
+        nodeRepo.insertNodes(parentId, body.nodes)
 
 //        TODO: insert nodes into the db
 

@@ -6,7 +6,12 @@ import com.google.inject.AbstractModule
 import com.google.inject.BindingAnnotation
 import com.google.inject.Provides
 import com.google.inject.Singleton
+import io.vertx.core.Vertx
+import io.vertx.core.json.JsonObject
+import io.vertx.ext.asyncsql.AsyncSQLClient
+import io.vertx.ext.asyncsql.MySQLClient
 import org.modelmapper.ModelMapper
+
 
 @BindingAnnotation
 @Target(AnnotationTarget.VALUE_PARAMETER)
@@ -23,5 +28,17 @@ class MainModule(private val args: Array<String>) : AbstractModule() {
     @Singleton
     fun provideModelMapper(): ModelMapper {
         return ModelMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDbConnection(vertx: Vertx): AsyncSQLClient {
+        val mySQLClientConfig = JsonObject()
+            .put("host", "mysql")
+            .put("username", "jeremy")
+            .put("password", "super_secret")
+            .put("database", "vertx_hierarchy")
+
+        return MySQLClient.createShared(vertx, mySQLClientConfig)
     }
 }
