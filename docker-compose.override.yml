@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  web:
+    image: gradle:6.4.1-jdk14
+    volumes:
+      - .:/app
+      - .gradle:/app/.gradle
+      - build:/app/build
+    working_dir: /app
+    entrypoint:
+      - "./gradlew"
+      - "run"
+
+volumes:
+  .gradle:
+  build:

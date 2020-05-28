@@ -62,6 +62,22 @@ compileTestKotlin {
 
 mainClassName = 'com.github.jtrujill.hierarchy.MainKt'
 
+def watchForChange = 'src/**/*.kt,src/**/*.java'
+
+def doOnChange = ".${File.separator}gradlew classes"
+
+run {
+    main = "io.vertx.core.Launcher"
+    args = ['run', "--redeploy=$watchForChange", "--launcher-class=$mainClassName", "--on-redeploy=$doOnChange"]
+
+    debugOptions {
+        enabled = true
+        port = 5566
+        server = true
+        suspend = false
+    }
+}
+
 shadowJar {
     mergeServiceFiles {
         include 'META-INF/services/io.vertx.core.spi.VerticleFactory'
