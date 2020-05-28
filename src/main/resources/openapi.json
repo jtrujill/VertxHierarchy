@@ -13,7 +13,7 @@
           {
             "name": "parentId",
             "in": "path",
-            "explode": false
+            "required": false
           }
         ],
         "responses": {
@@ -59,7 +59,7 @@
           {
             "name": "parentId",
             "in": "path",
-            "explode": false
+            "required": true
           }
         ],
         "responses": {
@@ -99,11 +99,77 @@
             }
           }
         }
+      },
+      "post": {
+        "operationId": "postHierarchy",
+        "x-vertx-event-bus": "hierarchy.App",
+        "parameters": [
+          {
+            "name": "parentId",
+            "in": "path",
+            "required": false
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nodes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "nodes"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HierarchicalData"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request was invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorObject"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Something went wrong",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorObject"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/hierarchy": {
       "post": {
-        "operationId": "postHierarchy",
+        "operationId": "postRootHierarchy",
         "x-vertx-event-bus": "hierarchy.App",
         "requestBody": {
           "required": true,
@@ -115,7 +181,7 @@
                   "nodes": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/HierarchicalData"
+                      "type": "string"
                     },
                     "minItems": 1
                   }

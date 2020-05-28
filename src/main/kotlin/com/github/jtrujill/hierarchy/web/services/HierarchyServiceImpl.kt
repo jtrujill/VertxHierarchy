@@ -25,7 +25,16 @@ class HierarchyServiceImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
+    override fun postRootHierarchy(
+        body: HierarchicalBody,
+        context: OperationRequest,
+        resultHandler: Handler<AsyncResult<OperationResponse>>
+    ) {
+        return postHierarchy(null, body, context, resultHandler)
+    }
+
     override fun postHierarchy(
+        parentId: String?,
         body: HierarchicalBody,
         context: OperationRequest,
         resultHandler: Handler<AsyncResult<OperationResponse>>

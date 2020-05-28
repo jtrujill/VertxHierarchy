@@ -17,7 +17,12 @@ public interface HierarchyService {
                          OperationRequest context,
                          Handler<AsyncResult<OperationResponse>> resultHandler);
 
-    void postHierarchy(HierarchicalBody body,
+    void postRootHierarchy(HierarchicalBody body,
+                           OperationRequest context,
+                           Handler<AsyncResult<OperationResponse>> resultHandler);
+
+    void postHierarchy(String parentId,
+                       HierarchicalBody body,
                        OperationRequest context,
                        Handler<AsyncResult<OperationResponse>> resultHandler);
 }

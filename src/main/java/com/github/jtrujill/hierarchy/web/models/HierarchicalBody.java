@@ -8,7 +8,7 @@ import java.util.List;
 
 @DataObject(generateConverter = true, publicConverter = false)
 public class HierarchicalBody {
-    private List<HierarchyNode> nodes = new ArrayList<>();
+    private List<String> nodes = new ArrayList<>();
 
     public HierarchicalBody(JsonObject json) {
         HierarchicalBodyConverter.fromJson(json, this);
@@ -24,11 +24,11 @@ public class HierarchicalBody {
         return json;
     }
 
-    public List<HierarchyNode> getNodes() {
+    public List<String> getNodes() {
         return nodes;
     }
 
-    public void setNodes(List<HierarchyNode> nodes) {
+    public void setNodes(List<String> nodes) {
         this.nodes = nodes;
     }
 }
