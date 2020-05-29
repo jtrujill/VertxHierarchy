@@ -66,16 +66,6 @@
           "204": {
             "description": "As long as nothing errors out this will return 204, even if the resource didn't exist"
           },
-          "404": {
-            "description": "Resource not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorObject"
-                }
-              }
-            }
-          },
           "500": {
             "description": "Something went wrong",
             "content": {
