@@ -12,6 +12,7 @@ import io.vertx.ext.web.RoutingContext
 import io.vertx.ext.web.api.contract.openapi3.OpenAPI3RouterFactory
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import io.vertx.serviceproxy.ServiceBinder
+import io.vertx.serviceproxy.ServiceException
 import org.slf4j.LoggerFactory
 
 
@@ -81,22 +82,14 @@ class MainVerticle @Inject constructor(@WebPort private val port: Int, private v
     }
 
     private fun handleInternalException(routingContext: RoutingContext) {
-        val defaultMsg =
-            "We apologize that an error occurred while servicing your request. If the problem persists please send an email to blah.blah@blah.com"
-        var message = routingContext.failure()?.message ?: defaultMsg
-        var code = 500
-        var codeMsg = "apiError"
-
-        if (message.contains("Error 1452", ignoreCase = true)) {
-            message = "Resource not found"
-            code = 404
-            codeMsg = "notFoundError"
-        } else if (message.contains("Error 1062", ignoreCase = true)) {
-            message = "Two nodes with the same parent can't have the same name"
-            code = 400
-            codeMsg = "invalidRequestError"
+        //  Not sure if there's a better way of routing to a specific errorHandler from a service
+        val exception = routingContext.failure()
+        if (exception is ServiceException) {
+            routingContext.fail(exception.failureCode(), exception)
         }
-        createError(routingContext, message, code, codeMsg)
+        val msg =
+            "We apologize that an error occurred while servicing your request. If the problem persists please send an email to blah.blah@blah.com"
+        createError(routingContext, msg, 500, "apiError")
     }
 
     private fun createError(routingContext: RoutingContext, message: String, code: Int, codeMsg: String = "apiError") {

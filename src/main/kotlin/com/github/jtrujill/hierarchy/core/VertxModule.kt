@@ -21,8 +21,8 @@ class VertxModule(val vertx: Vertx) : AbstractModule() {
         bind(SharedData::class.java).toInstance(vertx.sharedData())
 
         Names.bindProperties(
-                binder(),
-                extractToProperties(context.config())
+            binder(),
+            extractToProperties(context.config())
         )
     }
 
@@ -30,8 +30,8 @@ class VertxModule(val vertx: Vertx) : AbstractModule() {
         val properties = Properties()
         config.map.keys.stream().forEach { key: String? ->
             properties.setProperty(
-                    key,
-                    config.getValue(key) as String
+                key,
+                config.getValue(key) as String
             )
         }
         return properties

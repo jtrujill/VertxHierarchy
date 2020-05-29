@@ -14,7 +14,13 @@ import java.util.*
 
 class NodeRepo @Inject constructor(private val client: AsyncSQLClient, private val mapper: ModelMapper) {
     fun bulkInsert(parentId: String?, nodes: List<String>): Future<List<Node>> {
-        val uniqueNodes = nodes.map { it.trim() }.filter { it.isEmpty() }.toSet()
+        val uniqueNodes = nodes.map { it.trim() }.filter { it.isNotEmpty() }.toSet()
+
+        if (uniqueNodes.isEmpty()) {
+            val iae =
+                IllegalArgumentException("There must be at least one child node with a name of at least length one.")
+            return Future.failedFuture(iae)
+        }
 
         return getConnection().compose { conn ->
             bulkInsert(conn, parentId, uniqueNodes)
