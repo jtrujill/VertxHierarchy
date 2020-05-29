@@ -4,24 +4,32 @@ import com.github.jtrujill.hierarchy.app.repo.NodeRepo
 import com.github.jtrujill.hierarchy.web.models.HierarchicalBody
 import com.google.inject.Inject
 import io.vertx.core.AsyncResult
-import io.vertx.core.Future
 import io.vertx.core.Handler
-import io.vertx.core.json.JsonObject
+import io.vertx.core.http.HttpHeaders
+import io.vertx.core.json.JsonArray
 import io.vertx.ext.web.api.OperationRequest
 import io.vertx.ext.web.api.OperationResponse
-import org.modelmapper.ModelMapper
+
+private val logger = org.slf4j.LoggerFactory.getLogger(HierarchyServiceImpl::class.java)
 
 class HierarchyServiceImpl @Inject constructor(
-    private val mapper: ModelMapper,
     private val nodeRepo: NodeRepo
 ) :
     HierarchyService {
-    override fun getHierarchy(
-        parentId: String,
+    override fun getRootChildren(context: OperationRequest, resultHandler: Handler<AsyncResult<OperationResponse>>) {
+        getImmediateChildren(null, context, resultHandler)
+    }
+
+    override fun getImmediateChildren(
+        parentId: String?,
         context: OperationRequest,
         resultHandler: Handler<AsyncResult<OperationResponse>>
     ) {
-        TODO("Not yet implemented")
+        nodeRepo.getImmediateChildren(parentId).map { nodes ->
+            OperationResponse.completedWithJson(JsonArray(nodes))
+        }.onComplete {
+            resultHandler.handle(it)
+        }
     }
 
     override fun postRootHierarchy(
@@ -29,7 +37,7 @@ class HierarchyServiceImpl @Inject constructor(
         context: OperationRequest,
         resultHandler: Handler<AsyncResult<OperationResponse>>
     ) {
-        return postHierarchy(null, body, context, resultHandler)
+        postHierarchy(null, body, context, resultHandler)
     }
 
     override fun postHierarchy(
@@ -38,15 +46,11 @@ class HierarchyServiceImpl @Inject constructor(
         context: OperationRequest,
         resultHandler: Handler<AsyncResult<OperationResponse>>
     ) {
-        nodeRepo.insertNodes(parentId, body.nodes)
-
-//        TODO: insert nodes into the db
-
-        resultHandler.handle(
-            Future.succeededFuture(
-                OperationResponse.completedWithJson(JsonObject())
-            )
-        )
+        nodeRepo.bulkInsert(parentId, body.nodes).map { nodes ->
+            OperationResponse.completedWithJson(JsonArray(nodes))
+        }.onComplete {
+            resultHandler.handle(it)
+        }
     }
 
     override fun deleteHierarchy(
@@ -54,6 +58,14 @@ class HierarchyServiceImpl @Inject constructor(
         context: OperationRequest,
         resultHandler: Handler<AsyncResult<OperationResponse>>
     ) {
-        TODO("Not yet implemented")
+        nodeRepo.deleteNode(parentId)
+            .map {
+                OperationResponse()
+                    .setStatusCode(204)
+                    .setStatusMessage("NO Content")
+                    .putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/json")
+            }.onComplete {
+                resultHandler.handle(it)
+            }
     }
 }

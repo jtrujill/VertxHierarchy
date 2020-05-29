@@ -1,13 +1,13 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Prototype API",
+    "title": "Vertx Hierarchies",
     "version": "1.0.0"
   },
   "paths": {
-    "/api/hierarchy/{parentId}": {
+    "/api/nodes/{parentId}": {
       "get": {
-        "operationId": "getHierarchy",
+        "operationId": "getImmediateChildren",
         "x-vertx-event-bus": "hierarchy.App",
         "parameters": [
           {
@@ -63,20 +63,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
+          "204": {
+            "description": "NO Content"
           },
           "404": {
             "description": "Resource not found",
@@ -139,7 +127,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HierarchicalData"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HierarchicalData"
+                  }
                 }
               }
             }
@@ -167,7 +158,7 @@
         }
       }
     },
-    "/api/hierarchy": {
+    "/api/nodes": {
       "post": {
         "operationId": "postRootHierarchy",
         "x-vertx-event-bus": "hierarchy.App",
@@ -200,13 +191,55 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HierarchicalData"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HierarchicalData"
+                  }
                 }
               }
             }
           },
           "400": {
             "description": "Request was invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorObject"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Something went wrong",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorObject"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "getRootChildren",
+        "x-vertx-event-bus": "hierarchy.App",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HierarchicalData"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -235,15 +268,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "readOnly": true
+            "type": "string"
           },
           "parentId": {
             "oneOf": [
@@ -255,14 +280,15 @@
               }
             ]
           },
-          "group": {
+          "name": {
             "type": "string",
             "maxLength": 255
           }
         },
         "additionalProperties": false,
         "required": [
-          "group"
+          "id",
+          "name"
         ]
       },
       "ErrorObject": {

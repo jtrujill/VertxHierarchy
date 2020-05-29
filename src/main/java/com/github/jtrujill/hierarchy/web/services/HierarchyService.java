@@ -9,9 +9,12 @@ import io.vertx.ext.web.api.generator.WebApiServiceGen;
 
 @WebApiServiceGen
 public interface HierarchyService {
-    void getHierarchy(String parentId,
-                      OperationRequest context,
-                      Handler<AsyncResult<OperationResponse>> resultHandler);
+    void getRootChildren(OperationRequest context,
+                         Handler<AsyncResult<OperationResponse>> resultHandler);
+
+    void getImmediateChildren(String parentId,
+                              OperationRequest context,
+                              Handler<AsyncResult<OperationResponse>> resultHandler);
 
     void deleteHierarchy(String parentId,
                          OperationRequest context,

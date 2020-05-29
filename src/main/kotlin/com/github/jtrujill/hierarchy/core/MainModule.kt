@@ -11,6 +11,7 @@ import io.vertx.core.json.JsonObject
 import io.vertx.ext.asyncsql.AsyncSQLClient
 import io.vertx.ext.asyncsql.MySQLClient
 import org.modelmapper.ModelMapper
+import org.modelmapper.convention.NameTokenizers
 
 
 @BindingAnnotation
@@ -27,7 +28,11 @@ class MainModule(private val args: Array<String>) : AbstractModule() {
     @Provides
     @Singleton
     fun provideModelMapper(): ModelMapper {
-        return ModelMapper()
+        val modelMapper = ModelMapper()
+        modelMapper.configuration
+            .setSourceNameTokenizer(NameTokenizers.UNDERSCORE)
+            .setDestinationNameTokenizer(NameTokenizers.CAMEL_CASE)
+        return modelMapper
     }
 
     @Provides

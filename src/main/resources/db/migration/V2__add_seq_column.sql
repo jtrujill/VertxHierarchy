@@ -1,5 +1,5 @@
 # Hack to be able to do bulk insert while also using guid
-ALTER TABLE hierarchy ADD COLUMN seq BIGINT NOT NULL AUTO_INCREMENT, ADD INDEX(seq);
+ALTER TABLE hierarchy ADD COLUMN batch_seq VARCHAR(36) NOT NULL;
 
 ALTER TABLE hierarchy ADD INDEX (name);
 

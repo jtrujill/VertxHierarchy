@@ -51,7 +51,7 @@ dependencies {
     implementation "org.modelmapper:modelmapper:2.3.0"
     implementation "org.flywaydb:flyway-core:6.4.2"
     implementation "mysql:mysql-connector-java:8.0.20"
-    implementation "io.vertx:vertx-mysql-postgresql-client-jasync:3.9.1"
+    implementation "io.vertx:vertx-mysql-postgresql-client:3.9.1"
 }
 
 compileKotlin {

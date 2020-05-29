@@ -68,7 +68,7 @@ class MainVerticle @Inject constructor(@WebPort private val port: Int, private v
     }
 
     private fun handleBadRequestException(routingContext: RoutingContext) {
-        var message = routingContext.failure().message ?: "Invalid request"
+        var message = routingContext.failure()?.message ?: "Invalid request"
         message = message.replace("$.", "")
         val errorObject = createErrorBody(
             "invalidRequestError",
@@ -82,7 +82,7 @@ class MainVerticle @Inject constructor(@WebPort private val port: Int, private v
     }
 
     private fun handleNotFoundException(routingContext: RoutingContext) {
-        val message = routingContext.failure().message ?: "Resource not found"
+        val message = routingContext.failure()?.message ?: "Resource not found"
         val errorObject = createErrorBody(
             "notFoundError",
             message
@@ -97,7 +97,7 @@ class MainVerticle @Inject constructor(@WebPort private val port: Int, private v
     private fun handleInternalException(routingContext: RoutingContext) {
         val defaultMsg =
             "We apologize that an error occurred while servicing your request. If the problem persists please send an email to blah.blah@blah.com"
-        val message = routingContext.failure().message ?: defaultMsg
+        val message = routingContext.failure()?.message ?: defaultMsg
 
         val errorObject = createErrorBody(
             "apiError",
