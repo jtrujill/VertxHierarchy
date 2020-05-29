@@ -18,7 +18,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Ok",
+            "description": "Returns the immediate children of the given node. If the resource doesn't exist an empty array is returned",
             "content": {
               "application/json": {
                 "schema": {
@@ -64,7 +64,7 @@
         ],
         "responses": {
           "204": {
-            "description": "NO Content"
+            "description": "As long as nothing errors out this will return 204, even if the resource didn't exist"
           },
           "404": {
             "description": "Resource not found",
@@ -103,20 +103,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "nodes": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "minItems": 1
-                  }
-                },
-                "additionalProperties": false,
-                "required": [
-                  "nodes"
-                ]
+                "$ref": "#/components/schemas/NodeInsert"
               }
             }
           }
@@ -167,20 +154,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "nodes": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "minItems": 1
-                  }
-                },
-                "additionalProperties": false,
-                "required": [
-                  "nodes"
-                ]
+                "$ref": "#/components/schemas/NodeInsert"
               }
             }
           }
@@ -226,7 +200,7 @@
         "x-vertx-event-bus": "hierarchy.App",
         "responses": {
           "200": {
-            "description": "Ok",
+            "description": "Returns the root immediate children. If the resource doesn't exist an empty array is returned",
             "content": {
               "application/json": {
                 "schema": {
@@ -291,14 +265,33 @@
           "name"
         ]
       },
+      "NodeInsert": {
+        "type": "object",
+        "properties": {
+          "nodes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": "1",
+              "maxLength": "255"
+            },
+            "minItems": 1
+          }
+        }
+      },
       "ErrorObject": {
         "type": "object",
         "properties": {
-          "code": {
-            "type": "string"
-          },
-          "message": {
-            "type": "string"
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              }
+            }
           }
         }
       }

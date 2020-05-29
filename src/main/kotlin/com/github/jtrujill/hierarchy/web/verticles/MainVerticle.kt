@@ -50,6 +50,7 @@ class MainVerticle @Inject constructor(@WebPort private val port: Int, private v
 
                 router.errorHandler(400, ::handleBadRequestException)
                 router.errorHandler(404, ::handleNotFoundException)
+                router.errorHandler(405, ::handleMethodNotAllowed)
                 router.errorHandler(500, ::handleInternalException)
 
                 server = vertx.createHttpServer(HttpServerOptions().setPort(port).setHost("0.0.0.0"))
@@ -63,49 +64,46 @@ class MainVerticle @Inject constructor(@WebPort private val port: Int, private v
 
     }
 
-    private fun createErrorBody(code: String, message: String): JsonObject {
-        return JsonObject().put("code", code).put("message", message)
-    }
-
     private fun handleBadRequestException(routingContext: RoutingContext) {
         var message = routingContext.failure()?.message ?: "Invalid request"
         message = message.replace("$.", "")
-        val errorObject = createErrorBody(
-            "invalidRequestError",
-            message
-        )
-        routingContext
-            .response()
-            .setStatusCode(400)
-            .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-            .end(errorObject.encode())
+        createError(routingContext, message, 400, "invalidRequestError")
     }
 
     private fun handleNotFoundException(routingContext: RoutingContext) {
         val message = routingContext.failure()?.message ?: "Resource not found"
-        val errorObject = createErrorBody(
-            "notFoundError",
-            message
-        )
-        routingContext
-            .response()
-            .setStatusCode(404)
-            .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-            .end(errorObject.encode())
+        createError(routingContext, message, 404, "notFoundError")
+    }
+
+    private fun handleMethodNotAllowed(routingContext: RoutingContext) {
+        val msg = "Method not allowed with the specified resource"
+        createError(routingContext, msg, 405, "methodNotAllowed")
     }
 
     private fun handleInternalException(routingContext: RoutingContext) {
         val defaultMsg =
             "We apologize that an error occurred while servicing your request. If the problem persists please send an email to blah.blah@blah.com"
-        val message = routingContext.failure()?.message ?: defaultMsg
+        var message = routingContext.failure()?.message ?: defaultMsg
+        var code = 500
+        var codeMsg = "apiError"
 
-        val errorObject = createErrorBody(
-            "apiError",
-            message
-        )
+        if (message.contains("Error 1452", ignoreCase = true)) {
+            message = "Resource not found"
+            code = 404
+            codeMsg = "notFoundError"
+        } else if (message.contains("Error 1062", ignoreCase = true)) {
+            message = "Two nodes with the same parent can't have the same name"
+            code = 400
+            codeMsg = "invalidRequestError"
+        }
+        createError(routingContext, message, code, codeMsg)
+    }
+
+    private fun createError(routingContext: RoutingContext, message: String, code: Int, codeMsg: String = "apiError") {
+        val errorObject = JsonObject().put("error", JsonObject().put("code", codeMsg).put("message", message))
         routingContext
             .response()
-            .setStatusCode(500)
+            .setStatusCode(code)
             .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")
             .end(errorObject.encode())
     }
