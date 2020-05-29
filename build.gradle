@@ -2,8 +2,8 @@ buildscript {
     ext.kotlin_version = '1.3.72'
 
     repositories {
-        mavenCentral()
         jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -16,6 +16,7 @@ plugins {
     id "org.jetbrains.kotlin.jvm" version "1.3.72"
     id "org.flywaydb.flyway" version "6.3.3"
     id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id "io.swagger.core.v3.swagger-gradle-plugin" version "2.1.2"
 }
 
 flyway {
@@ -30,8 +31,8 @@ group 'com.github.jtrujill'
 version '1.0-SNAPSHOT'
 
 repositories {
-    mavenCentral()
     jcenter()
+    mavenCentral()
 }
 
 dependencies {
