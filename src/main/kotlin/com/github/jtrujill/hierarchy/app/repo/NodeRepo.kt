@@ -14,7 +14,7 @@ import java.util.*
 
 class NodeRepo @Inject constructor(private val client: AsyncSQLClient, private val mapper: ModelMapper) {
     fun bulkInsert(parentId: String?, nodes: List<String>): Future<List<Node>> {
-        val uniqueNodes = nodes.toSet()
+        val uniqueNodes = nodes.map { it.trim() }.filter { it.isEmpty() }.toSet()
 
         return getConnection().compose { conn ->
             bulkInsert(conn, parentId, uniqueNodes)
