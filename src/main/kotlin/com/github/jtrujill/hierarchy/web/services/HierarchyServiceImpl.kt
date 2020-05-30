@@ -4,7 +4,6 @@ import com.github.jtrujill.hierarchy.app.repo.NodeRepo
 import com.github.jtrujill.hierarchy.web.models.HierarchicalBody
 import com.google.inject.Inject
 import io.vertx.core.AsyncResult
-import io.vertx.core.Future
 import io.vertx.core.Handler
 import io.vertx.core.http.HttpHeaders
 import io.vertx.core.json.JsonArray
@@ -60,7 +59,7 @@ class HierarchyServiceImpl @Inject constructor(
 
                     val failedFut = when {
                         throwable is IllegalArgumentException -> {
-                            ServiceException.fail<OperationResponse>(400, throwable.message)
+                            ServiceException.fail(400, throwable.message)
                         }
                         errorMsg.contains("Error 1452", ignoreCase = true) -> {
                             val msg = "Parent Node doesn't exist. Node must exist or be null."
@@ -71,7 +70,7 @@ class HierarchyServiceImpl @Inject constructor(
                             ServiceException.fail(400, msg)
                         }
                         else -> {
-                            Future.failedFuture(it.cause())
+                            it
                         }
                     }
                     resultHandler.handle(failedFut)

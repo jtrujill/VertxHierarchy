@@ -5,8 +5,8 @@ services:
     image: gradle:6.4.1-jdk14
     volumes:
       - .:/app
-      - gradle:/app/.gradle
-      - build:/app/build
+      - /app/.gradle/
+      - /app/build/
     working_dir: /app
     ports:
       - 5566:5566

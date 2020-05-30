@@ -12,19 +12,18 @@ import io.vertx.core.Vertx
 import io.vertx.core.logging.LoggerFactory
 import io.vertx.core.logging.LoggerFactory.LOGGER_DELEGATE_FACTORY_CLASS_NAME
 import io.vertx.core.logging.SLF4JLogDelegateFactory
-import io.vertx.kotlin.core.deployVerticleAwait
 import org.flywaydb.core.Flyway
 import java.lang.System.setProperty
 
 private val logger = org.slf4j.LoggerFactory.getLogger(MainVerticle::class.java)
 
-suspend fun main(args: Array<String>) {
+fun main(args: Array<String>) {
     setupLogging()
     migrateDb()
 
     val vertx = Vertx.vertx()
     initGuice(args, vertx)
-    vertx.deployVerticleAwait("kotlin-guice:${MainVerticle::class.java.canonicalName}")
+    vertx.deployVerticle("kotlin-guice:${MainVerticle::class.java.canonicalName}")
 }
 
 private fun setupLogging() {
